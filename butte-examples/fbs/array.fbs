@@ -1,0 +1,19 @@
+/// Flatbuffers namespaces are defined as UpperCamelCase.
+namespace Array;
+
+/// A test entry with a value.
+table Entry {
+  value: uint64;
+}
+
+enum Value: ubyte {
+  A = 0,
+  B = 1
+}
+
+/// An array of tables.
+table ArrayTable {
+  table_entries: [Entry];
+  enum_entries: [Value];
+  int_entries: [int32];
+}
