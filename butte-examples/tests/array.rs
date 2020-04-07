@@ -41,20 +41,20 @@ fn test_table_array() -> Result<()> {
     let output = array::ArrayTable::get_root(raw_bytes)?;
     let table_entries = output
         .table_entries()?
-        .ok_or(anyhow!("empty table_entries"))?;
+        .ok_or_else(|| anyhow!("empty table_entries"))?;
     let enum_entries = output
         .table_entries()?
-        .ok_or(anyhow!("empty enum_entries"))?;
+        .ok_or_else(|| anyhow!("empty enum_entries"))?;
     let int_entries = output
         .table_entries()?
-        .ok_or(anyhow!("empty int_entries"))?;
+        .ok_or_else(|| anyhow!("empty int_entries"))?;
     assert_eq!(table_entries.len()?, table_entry_vec.len());
     assert_eq!(enum_entries.len()?, enum_entry_vec.len());
     assert_eq!(int_entries.len()?, int_entry_vec.len());
 
     // Verify the table entry contents.
     for (i, entry) in table_entries.iter().enumerate() {
-        let entry = array::Entry::from(entry?);
+        let entry = entry?;
         assert_eq!(Some(i as u64), entry.value()?);
     }
 

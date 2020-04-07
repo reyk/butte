@@ -75,7 +75,7 @@ mod ir_ident_tests {
 /// Convert a `types::Type` to a type with the supplied wrapper for reference types
 fn to_type_token(
     context_namespace: Option<&ir::QualifiedIdent<'_>>,
-    ty: &ir::Type,
+    ty: &ir::Type<'_>,
     lifetime: &TokenStream,
     wrap_refs_types: &TokenStream,
     wrap_outer: bool,
@@ -1175,7 +1175,7 @@ table Hello {
         match &actual.nodes[0] {
             Node::Table(table) => {
                 let result = to_code(table);
-                assert_eq!(2, result.matches("required").collect::<Vec<_>>().len());
+                assert_eq!(2, result.matches("required").count());
             }
             node => panic!("{:?}", node),
         }
