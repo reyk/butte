@@ -1,14 +1,12 @@
 //! Test for https://github.com/butte-rs/butte/issues/39
 
 pub mod tests {
-    // TODO: convert the namespace to snake_case.
-    #![allow(non_snake_case)]
     butte_build::include_fbs!("array");
 }
 
 use anyhow::{anyhow, Result};
 use butte as fb;
-use tests::Array as array;
+use tests::array;
 
 #[test]
 fn test_table_array() -> Result<()> {
