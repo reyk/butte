@@ -65,7 +65,7 @@ where
             }
             <T>::follow(self.buf.as_ref(), self.loc + o).map(Some)
         } else {
-            Ok(None)
+            Ok(default)
         }
     }
 }
