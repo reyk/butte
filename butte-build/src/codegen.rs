@@ -567,6 +567,7 @@ impl ToTokens for ir::Table<'_> {
                 ty,
                 metadata,
                 doc,
+                default_value,
                 ..
             } = field;
             let offset_name = offset_id(field);
@@ -586,7 +587,12 @@ impl ToTokens for ir::Table<'_> {
                 &quote!(butte::ForwardsUOffset),
                 true,
             );
-
+            let default_value = if let Some(default_value) = default_value {
+		let default_value = to_default_value(&ty_wrapped, &default_value);
+                quote!(Some(#default_value))
+            } else {
+                quote!(None)
+            };
             let allow_type_complexity = if ty.is_complex() {
                 quote!(#[allow(clippy::type_complexity)])
             } else {
@@ -629,7 +635,7 @@ impl ToTokens for ir::Table<'_> {
                             );
                             quote! {
                                 #enum_ident::#variant_ident => #union_ident::#variant_ident(self.table
-                                    .get::<#variant_ty_wrapped>(#struct_id::#offset_name)?
+                                    .get::<#variant_ty_wrapped>(#struct_id::#offset_name, None)?
                                     .ok_or_else(|| butte::Error::RequiredFieldMissing(#snake_name_str))?)
                             }
                         },
@@ -658,7 +664,7 @@ impl ToTokens for ir::Table<'_> {
                             );
                             quote! {
                                 Some(#enum_ident::#variant_ident) => self.table
-                                    .get::<#variant_ty_wrapped>(#struct_id::#offset_name)?
+                                    .get::<#variant_ty_wrapped>(#struct_id::#offset_name, None)?
                                     .map(#union_ident::#variant_ident)
                             }
                         },
@@ -681,7 +687,7 @@ impl ToTokens for ir::Table<'_> {
                     #allow_type_complexity
                     pub fn #snake_name(&self) -> Result<#ty_ret, butte::Error> {
                         Ok(self.table
-                            .get::<#ty_wrapped>(#struct_id::#offset_name)?
+                            .get::<#ty_wrapped>(#struct_id::#offset_name, #default_value)?
                             .ok_or_else(|| butte::Error::RequiredFieldMissing(#snake_name_str))?)
                     }
                 }
@@ -692,7 +698,7 @@ impl ToTokens for ir::Table<'_> {
                     #allow_type_complexity
                     pub fn #snake_name(&self) -> Result<Option<#ty_ret>, butte::Error> {
                         self.table
-                            .get::<#ty_wrapped>(#struct_id::#offset_name)
+                            .get::<#ty_wrapped>(#struct_id::#offset_name, #default_value)
                     }
                 }
             }
