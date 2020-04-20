@@ -11,9 +11,14 @@ enum Value: ubyte {
   B = 1
 }
 
-/// An array of tables.
+/// Different arrays.
 table ArrayTable {
   table_entries: [Entry];
   enum_entries: [Value];
   int_entries: [int32];
+}
+
+/// Array of arrays.
+table ArrayOfArrayTable {
+  table_arrays: [[Entry]] (required);
 }
