@@ -59,11 +59,11 @@ where
     ) -> Result<Option<T::Inner>, Error> {
         let v_offset = self.vtable()?.get(slot_byte_loc)?;
         if let Some(v_offset) = v_offset {
-            let o = v_offset as usize;
-            if o == 0 {
+            let offset = v_offset as usize;
+            if offset == 0 {
                 return Ok(default);
             }
-            <T>::follow(self.buf.as_ref(), self.loc + o).map(Some)
+            <T>::follow(self.buf.as_ref(), self.loc + offset).map(Some)
         } else {
             Ok(default)
         }

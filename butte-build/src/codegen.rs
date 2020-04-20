@@ -588,7 +588,7 @@ impl ToTokens for ir::Table<'_> {
                 true,
             );
             let default_value = if let Some(default_value) = default_value {
-		let default_value = to_default_value(&ty_wrapped, &default_value);
+                let default_value = to_default_value(&ty_wrapped, &default_value);
                 quote!(Some(#default_value))
             } else {
                 quote!(None)
