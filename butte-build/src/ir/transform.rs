@@ -4,7 +4,7 @@ use heck::SnakeCase;
 use itertools::Itertools;
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
-    convert::TryFrom,
+    convert::{TryFrom, TryInto},
 };
 
 #[derive(Default, Clone, Debug)]
@@ -132,7 +132,12 @@ impl<'a> Builder<'a> {
                     });
                 }
                 let ident = ir::Ident::from(&f.id);
-                let default_value = f.default_value.clone();
+                let default_value = if f.default_value.is_none() {
+                    // Returns `Some` implicit default value or `None`
+                    (&f.ty).try_into().ok()
+                } else {
+                    f.default_value.clone()
+                };
                 let metadata = ir::FieldMetadata::builder().required(required).build();
                 let doc = f.doc.clone();
 
