@@ -396,12 +396,10 @@ impl<'a> TryFrom<&Type<'a>> for DefaultValue<'a> {
     type Error = butte::Error;
 
     fn try_from(ty: &Type<'a>) -> Result<Self, Self::Error> {
-        use Type::*;
-
         match ty {
-            Array(..) | Ident(..) | String => None,
-            Bool => Some(false.into()),
-            Double | Float | Float32 | Float64 => Some((0.0).into()),
+            Type::Array(..) | Type::Ident(..) | Type::String => None,
+            Type::Bool => Some(false.into()),
+            Type::Double | Type::Float | Type::Float32 | Type::Float64 => Some((0.0).into()),
             _ => Some(0.into()),
         }
         .ok_or(butte::Error::NoTypeDefaultValue)

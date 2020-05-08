@@ -132,12 +132,8 @@ impl<'a> Builder<'a> {
                     });
                 }
                 let ident = ir::Ident::from(&f.id);
-                let default_value = if f.default_value.is_none() {
-                    // Returns `Some` implicit default value or `None`
-                    (&f.ty).try_into().ok()
-                } else {
-                    f.default_value.clone()
-                };
+                // Use `Some` explicit or implicit default value or `None`
+                let default_value = f.default_value.clone().or_else(|| (&f.ty).try_into().ok());
                 let metadata = ir::FieldMetadata::builder().required(required).build();
                 let doc = f.doc.clone();
 
